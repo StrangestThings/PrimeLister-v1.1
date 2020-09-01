@@ -1,0 +1,101 @@
+time=getTime();
+tall=getTime();
+print("\\Clear");
+
+// With 16GB-Ram: Max-range of 100,000,000
+// With 32GB-Ram: Max-range of 250,000,000
+// Calculates about 1.5 sec per million of range (i7-Processor)
+
+range=100000;
+
+A=newArray(range);
+B=Array.copy(A);
+
+print(" The empty Arrays A and B have been created: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+
+time=getTime();
+
+// ************************************************
+
+// Fill the Arrays A and B with prime-candidates
+for (i = 1; i < A.length+1; i++) {A[i-1]=6*i-1; B[i-1]=6*i+1;}
+
+// *******************************************************
+
+print(" Arrays A and B have beenfilled: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+time=getTime();
+
+// Clean up Array A and B
+// Delete the multiples of every single element from both Array A and B
+
+for (i = 0; (i+A[i]) < A.length; i++) {
+while (A[i]==0){i++;}
+for (j = (7*i+5); j < A.length; j=j+A[i]) {A[j]=0;}
+}
+
+print(" Array A has been cleaned: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+time=getTime();
+
+for (i = 0; (i+B[i]) < B.length; i++) {
+while (B[i]==0){i++;}
+for (j = (7*i+7); j < B.length; j=j+B[i]) {B[j]=0;}
+}
+
+print(" Array B has been cleaned: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+time=getTime();
+
+// ****************************************
+
+// Further processing of Array B (slighly more complicated than A)
+// Delete all the squares of the elements from array A in Array B
+// Delete all the multiples of the elements from Array A in Array B
+
+for (i = 0; (6*i*i+10*i+3) < A.length; i++) {
+B[6*i*i+10*i+3]=0;
+while (A[i]==0) {i++;}
+for (j = (6*i*i+10*i+3); j < B.length; j=j+A[i]) {B[j]=0;}
+}
+
+print(" All squares and multiples of the primes from Array A were deleted in B: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+time=getTime();
+
+
+// merge both Arrays, add the missing primes 2 and 3, delete all zeros and sort the elements
+
+A=Array.deleteValue(A, 0);
+B=Array.deleteValue(B, 0);
+A=Array.concat(A,2);
+A=Array.concat(A,3);
+A=Array.concat(A,B);
+A=Array.sort(A);
+
+print(" Both Arrays are now cleaned from zeros, merged and sorted: " + IJ.freeMemory() + "; " + (getTime()-time)/1000 + " [sec]");
+
+zeit=(getTime()-tall)/1000;
+
+print(" Range: " + range);
+print(" primes found: " + A.length);
+print(" Calculation time  [sec]: " + zeit);
+print(" Primes per second: " + A.length/zeit);
+
+//print(range + "\t" + A.length + "\t" + zeit + "\t" + A.length/zeit);
+
+print("****************************************************");
+
+results = getInfo("log");
+results=replace(results,".",",");
+print("\\Clear"); 
+print(results); 
+
+// Print x primes per row and count them
+
+exit();
+
+colums=100;
+
+for (i = 0; i < A.length-colums; i=i+colums) {
+line=toString((1+i) + "-" + (i+colums) + ":" + "\t");
+for (s = i; s < i+colums; s++) {line=line+A[s]+"\t";}
+print(line);
+}
+
